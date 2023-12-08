@@ -1,8 +1,43 @@
 ---
-- hosts: all
+- hosts: frontend-machines
   become: true
   vars:
-    container_count: 4
+    container_count: 3
     default_container_name: docker
-    default_container_image: ubuntu
-    default_container_command: sleep 1
+    default_container_image: node
+    default_container_command: npm run serve
+  tasks:
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+
+    - name: create backend directory
+      file:
+        path: /home/ansible/backend
+        state: directory
+        owner: ansible
+        group: ansible
+        mode: '0755'
+
+    - name: Copy backend dockerfile folder to remote
+      copy:
+        src: ./aits-docker-backend/
+        dest: /home/ansible/backend/
+        owner: ansible
+        group: ansible
+        mode: '0644'
+
+

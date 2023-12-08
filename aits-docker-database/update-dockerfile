@@ -1,0 +1,9 @@
+#! /bin/bash
+docker rm dbtestinstance -f
+docker rmi dbtest
+docker build -t dbtest .
+docker run \
+    --name dbtestinstance \
+    -e MONGO_INITDB_DATABASE=mymongodatabase \
+    --network host
+    dbtest
