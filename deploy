@@ -1,0 +1,2 @@
+#! /bin/bash
+ansible-playbook docker-playbook.yml --extra-vars "ansible_sudo_pass=<sudopassword>"
