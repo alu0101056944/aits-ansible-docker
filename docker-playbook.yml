@@ -24,20 +24,33 @@
       pip:
         name: docker
 
-    - name: create backend directory
+    - name: create frontend directory on remote
       file:
-        path: /home/ansible/backend
+        path: /home/ansible/frontend
         state: directory
         owner: ansible
         group: ansible
         mode: '0755'
 
-    - name: Copy backend dockerfile folder to remote
+    - name: Copy frontend dockerfile folder to remote
       copy:
-        src: ./aits-docker-backend/
-        dest: /home/ansible/backend/
+        src: ./aits-docker-frontend/
+        dest: /home/ansible/frontend/
         owner: ansible
         group: ansible
         mode: '0644'
 
+    - name: build container image
+      docker_image:
+        name: frontend:latest
+        build:
+          path: /home/ansible/frontend
+        source: build
+        state: present
 
+    - name: create container
+      docker_container:
+        name: frontendcontainer
+        image: frontend:latest
+        network_mode: host
+        state: started
